@@ -3,6 +3,7 @@
 - [Requirements](https://github.com/nicnacnic/DACBot/blob/main/README.md#requirements)
 - [Bot Setup](https://github.com/nicnacnic/DACBot/blob/main/README.md#bot-setup)
 - [Usage](https://github.com/nicnacnic/DACBot/blob/main/README.md#usage)
+   - [Using in Multiple Voice Channels]()
 - [Bugs](https://github.com/nicnacnic/DACBot/blob/main/README.md#bugs)
 - [Contributing](https://github.com/nicnacnic/DACBot/blob/main/README.md#contributing)
 - [Special Thanks](https://github.com/nicnacnic/DACBot/blob/main/README.md#special-thanks)
@@ -64,6 +65,9 @@ You should see the bot become online on your server, and you're ready to type ou
 Once the bot has started, enter a voice channel, then ping the bot with the `connect` command to have it join your VC and start capturing audio. To stop capturing audio, simply ping the bot again with the `disconnect` command and the bot will leave. Ping the bot with the `help` command for some help.
 
 ![image](https://user-images.githubusercontent.com/39160563/118412498-63abf580-b668-11eb-962b-9467ffc3a173.png)
+
+### Using in Multiple Voice Channels
+Currently, DACBot only supports audio capture in one voice channel at the same time. But what if you want to capture audio from multiple voice channels? All you have to do is to setup multiple instances of DACBot, with different bots assigned for each instance. The command system ensures you're always pinging the right bot.
 
 ## Bugs
 - DACBot will **not** work if a user is connecting from the browser. It only works on desktop/mobile. It will crash the bot so don't attempt it. This appears to be a limitation with Discord.JS, the library used to write the bot.
