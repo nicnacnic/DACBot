@@ -3,7 +3,7 @@
 - [Requirements](https://github.com/nicnacnic/DACBot/blob/main/README.md#requirements)
 - [Bot Setup](https://github.com/nicnacnic/DACBot/blob/main/README.md#bot-setup)
 - [Usage](https://github.com/nicnacnic/DACBot/blob/main/README.md#usage)
-   - [Using in Multiple Voice Channels]()
+   - [Using in Multiple Voice Channels](https://github.com/nicnacnic/DACBot/blob/main/README.md#using-in-multiple-voice-channels)
 - [Bugs](https://github.com/nicnacnic/DACBot/blob/main/README.md#bugs)
 - [Contributing](https://github.com/nicnacnic/DACBot/blob/main/README.md#contributing)
 - [Special Thanks](https://github.com/nicnacnic/DACBot/blob/main/README.md#special-thanks)
