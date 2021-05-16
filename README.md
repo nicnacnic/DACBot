@@ -67,7 +67,7 @@ Once the bot has started, enter a voice channel, then ping the bot with the `con
 ![image](https://user-images.githubusercontent.com/39160563/118412498-63abf580-b668-11eb-962b-9467ffc3a173.png)
 
 ### Using in Multiple Voice Channels
-Currently, DACBot only supports audio capture in one voice channel at the same time. But what if you want to capture audio from multiple voice channels? All you have to do is to setup multiple instances of DACBot, with different bots assigned for each instance. The command system ensures you're always pinging the right bot.
+Currently, DACBot only supports audio capture in one voice channel at a time. But what if you want to capture audio from multiple voice channels? All you have to do is to setup multiple instances of DACBot, with different bots assigned for each instance. The command system ensures you're always pinging the right bot.
 
 ## Bugs
 - DACBot will **not** work if a user is connecting from the browser. It only works on desktop/mobile. It will crash the bot so don't attempt it. This appears to be a limitation with Discord.JS, the library used to write the bot.
