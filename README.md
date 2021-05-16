@@ -1,3 +1,9 @@
+[![Release](https://img.shields.io/github/v/release/nicnacnic/DACBot?label=Release)](https://github.com/nicnacnic/speedcontrol-layouts/releases)
+![Downloads](https://img.shields.io/github/downloads/nicnacnic/DACBot/total?label=Downloads)
+![License](https://img.shields.io/github/license/nicnacnic/DACBot?label=License)
+[![Twitter](https://img.shields.io/twitter/follow/nicnacnic11?style=social)](https://twitter.com/nicnacnic11)
+[![Discord](https://img.shields.io/badge/-Join%20the%20Discord!-brightgreen?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/A34Qpfe)
+
 ## Contents
 - [What is DACBot?](https://github.com/nicnacnic/DACBot/blob/main/README.md#what-is-dacbot)
 - [Requirements](https://github.com/nicnacnic/DACBot/blob/main/README.md#requirements)
@@ -28,7 +34,7 @@ Here you can customize the username and avatar of your bot. The username/avatar 
 
 ![image](https://user-images.githubusercontent.com/39160563/118413018-2dbc4080-b66b-11eb-8fd5-fd4ac103451b.png)
 
-Download the latest [release](https://github.com/nicnacnic/DACBot/releases). Put all the files somewhere on your computer that you can easily navigate to. Then, open `config.json`.
+Download the latest [release](https://github.com/nicnacnic/DACBot/releases). Put all the files somewhere on your computer that you can easily navigate to. Make sure to run `npm install` in your Command Prompt to install the required dependencies. Then, open `config.json`.
 
 Next to `token`, paste your bot token that you obtained earlier.  
 Next to `roleID`, paste a role ID that a user must have to control the bot. If a user does not have the role specified, they won't be able to control the bot.  
