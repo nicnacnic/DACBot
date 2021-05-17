@@ -1,5 +1,4 @@
 [![Release](https://img.shields.io/github/v/release/nicnacnic/DACBot?label=Release)](https://github.com/nicnacnic/speedcontrol-layouts/releases)
-![Downloads](https://img.shields.io/github/downloads/nicnacnic/DACBot/total?label=Downloads)
 ![License](https://img.shields.io/github/license/nicnacnic/DACBot?label=License)
 [![Twitter](https://img.shields.io/twitter/follow/nicnacnic11?style=social)](https://twitter.com/nicnacnic11)
 [![Discord](https://img.shields.io/badge/-Join%20the%20Discord!-brightgreen?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/A34Qpfe)
