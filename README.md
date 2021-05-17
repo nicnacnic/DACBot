@@ -101,7 +101,7 @@ If you have any suggestions or bugfixes, please submit a pull request! Before yo
 ## Special Thanks
 Zoton2 and SovietPropaganda, for help and suggestions while coding the bot.
 
-Patlabor and Titan63, for helping test the bot.
+Patlabor and Titan63, for stopping their Valheim game to test the bot.
 
 ## License
 MIT License
