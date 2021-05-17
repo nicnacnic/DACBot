@@ -10,6 +10,7 @@
 - [Bot Setup](https://github.com/nicnacnic/DACBot/blob/main/README.md#bot-setup)
 - [Usage](https://github.com/nicnacnic/DACBot/blob/main/README.md#usage)
    - [Using in Multiple Voice Channels](https://github.com/nicnacnic/DACBot/blob/main/README.md#using-in-multiple-voice-channels)
+- [Troubleshooting](https://github.com/nicnacnic/DACBot/blob/main/README.md#troubleshooting)
 - [Bugs](https://github.com/nicnacnic/DACBot/blob/main/README.md#bugs)
 - [Contributing](https://github.com/nicnacnic/DACBot/blob/main/README.md#contributing)
 - [Special Thanks](https://github.com/nicnacnic/DACBot/blob/main/README.md#special-thanks)
@@ -74,6 +75,23 @@ Once the bot has started, enter a voice channel, then ping the bot with the `con
 
 ### Using in Multiple Voice Channels
 Currently, DACBot only supports audio capture in one voice channel at a time. But what if you want to capture audio from multiple voice channels? All you have to do is to setup multiple instances of DACBot, with different bots assigned for each instance. The command system ensures you're always pinging the right bot.
+
+## Troubleshooting
+**The audio is off-pitch!**
+
+DACBot only supports 48 kHz, using any other frequency might distort the audio. Please choose an audio device that supports 48 kHz.
+
+**The audio is super delayed!**
+
+Under normal circumstances, the audio should only be delayed by ~0.25s. If it's delayed more, try restarting the bot.
+
+**The commands don't work!**
+
+Are you sure you're typing in the command correctly? Available commands are `connect`, `disconnect`, and `help`. Make sure you include a space between the ping and the command. Also, check your bot console for any potential errors.
+
+**The bot crashes when speaking from my browser!**
+
+See [Bugs](https://github.com/nicnacnic/DACBot/blob/main/README.md#bugs) below. Due to an issue with Discord.JS, only desktop/mobile is supported at the moment. Hopefully this gets fixed soon, but for the meantime make sure you're using deskop/mobile only.
 
 ## Bugs
 - DACBot will **not** work if a user is connecting from the browser. It only works on desktop/mobile. It will crash the bot so don't attempt it. This appears to be a limitation with Discord.JS, the library used to write the bot.
