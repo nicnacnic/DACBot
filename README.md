@@ -18,6 +18,8 @@
 ## What is DACBot?
 Discord Audio Capture Bot (also known as DACBot) is a self-hosted Discord bot that can capture the audio of all users in a voice channel and stream it to an audio device of your choice! Perfect for those times you want to capture Discord audio but don't want to go through the hassle of capturing Discord directly through OBS.
 
+*Using [NodeCG](https://nodecg.dev)? Try [nodecg-dacbot](https://github.com/nicnacnic/nodecg-dacbot), which includes more features like user audio control and a live VC user overlay!*
+
 ## Requirements
 - [Node.JS](https://nodejs.org/en/download/)
 
