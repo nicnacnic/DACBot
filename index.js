@@ -1,102 +1,148 @@
 const fs = require('fs');
+const Discord = require('discord.js');
 const Speaker = require('speaker');
 const AudioMixer = require('audio-mixer')
-const Discord = require('discord.js');
 const command = require('./commands');
-const { token, device } = require('./config.json');
+const { botToken, roleID, device } = require('./config.json');
 
-let silence, connection;
+let silence, connection, guild, mixer, speaker;
 let currentMembers = [];
-
-let mixer = new AudioMixer.Mixer({
-	channels: 2,
-	bitDepth: 16,
-	sampleRate: 48000,
-});
+connection = undefined;
 
 const client = new Discord.Client();
 client.once('ready', () => {
-	console.log('Bot is now online. Ping the bot with the connect command to connect to a voice channel!')
+	console.log('DACBot is now online. For help, type @' + client.user.username + ' help')
 
-	command(client, 'help', (message) => {
+	command(client, 'help', roleID, (message) => {
 		const helpEmbed = new Discord.MessageEmbed()
 			.setTitle("DACBot Help")
 			.setURL("https://github.com/nicnacnic/DACBot")
 			.setDescription("Does someone need some help?")
 			.addField("Connecting to a Voice Channel", "<@" + client.user.id + "> connect\nThe bot will connect to the voice channel that the user is in and start capturing audio.")
 			.addField("Disconnecting from a Voice Channel", "<@" + client.user.id + "> disconnect\nThe bot will stop capturing audio and disconnect from the voice channel.")
+			.addField("Changing a User's Volume", "<@" + client.user.id + "> volume <user> <volumeLevel>\nThe bot will change the volume of the specified user. `volumeLevel` must be between 1 and 100.")
 			.setThumbnail(client.user.displayAvatarURL())
 			.setFooter("DACBot made by nicnacnic")
 			.setTimestamp()
 		message.channel.send(helpEmbed);
 	})
-	command(client, 'connect', (message) => {
-		record(message);
+
+	command(client, 'connect', roleID, (message) => {
+		if (connection !== undefined)
+			message.reply(`I\'m already in a voice channel! Please disconnect me first.`)
+		else if (message.member.voice.channel !== undefined && message.member.voice.channel !== null) {
+			guild = message.member.guild.id;
+			record(message.member.voice.channel.id);
+			message.channel.send('Connected to `' + message.member.voice.channel.name + '`.')
+		}
+		else
+			message.reply(`you're not in a voice channel!`)
 	})
-	command(client, 'disconnect', (message) => {
+
+	command(client, 'volume', roleID, (user, volume, message) => {
 		if (connection !== undefined) {
-			console.log('Audio capture stopped for channel ' + connection.channel.name + ' on ' + Date())
+			for (let i = 0; i < currentMembers.length; i++) {
+				if (currentMembers[i].id === user) {
+					currentMembers[i].mixer.setVolume(volume)
+					break;
+				}
+			}
+			message.channel.send('`' + message.guild.members.cache.get(user).user.username + '`\'s volume changed to ' + volume + '.')
+		}
+		else
+			message.reply(`I'm not in a voice channel!`)
+	})
+
+	command(client, 'disconnect', roleID, (message) => {
+		if (connection !== undefined) {
 			message.channel.send('Disconnected from `' + connection.channel.name + '`.')
-			audioStream = [];
-			connection.channel.leave();
-			connection = undefined
-			clearInterval(silence)
+			stopRecording(connection.channel.name);
 		}
 		else
 			message.reply(`I'm not in a voice channel!`)
 	});
 
 	client.on('voiceStateUpdate', (oldMember, newMember) => {
-		if (connection !== undefined && oldMember.channelID !== connection.channel.id && newMember.channelID === connection.channel.id && oldMember.id !== client.user.id) {
-			let i = currentMembers.length;
-			currentMembers.push({ id: newMember.id, audio: '', mixer: '' })
-			currentMembers[i].audio = connection.receiver.createStream(currentMembers[i].id, { mode: 'pcm', end: 'manual' });
-			currentMembers[i].mixer = mixer.input({
-				volume: 100
-			});
-			currentMembers[i].audio.pipe(currentMembers[i].mixer);
+		if (connection !== undefined && newMember.id !== client.user.id) {
+			if (oldMember.channelID !== connection.channel.id && newMember.channelID === connection.channel.id) {
+				let i = currentMembers.length;
+				currentMembers.push({ id: newMember.id, audio: '', mixer: '' })
+				currentMembers[i].audio = connection.receiver.createStream(currentMembers[i].id, { mode: 'pcm', end: 'manual' });
+				currentMembers[i].mixer = mixer.input({
+					volume: 100
+				});
+				currentMembers[i].audio.pipe(currentMembers[i].mixer);
+			}
+			else if (oldMember.channelID === connection.channel.id && newMember.channelID !== connection.channel.id) {
+				for (let i = 0; i < currentMembers.length; i++) {
+					if (currentMembers[i].id === newMember.id) {
+						currentMembers.splice(i, 1)
+						break;
+					}
+				}
+			}
 		}
-		else if (connection !== undefined && oldMember.channelID === connection.channel.id && newMember.channelID !== connection.channel.id && oldMember.id !== client.user.id) {
-			for (let i = 0; i < currentMembers.length; i++) {
-				if (currentMembers[i].id === oldMember.id)
-					currentMembers.splice(i, 1)
-					break
+		else if (oldMember.id === client.user.id && oldMember.channelID !== null) {
+			if (newMember.channelID === null)
+				stopRecording(oldMember.channel.name);
+			else if (oldMember.channelID !== newMember.channelID && connection !== undefined) {
+				let channelID = newMember.channelID;
+				stopRecording(oldMember.channel.name);
+				setTimeout(function () { record(channelID); }, 500);
 			}
 		}
 	})
 });
-async function record(message) {
-	if (message.member.voice.channel !== undefined && message.member.voice.channel !== null) {
-		connection = await message.member.voice.channel.join();
-		message.guild.channels.cache.get(message.channel.id).members.forEach((member) => {
-			if (member.user.id !== client.user.id)
-				currentMembers.push({ id: member.user.id, audio: '', mixer: ''});
-		})
-		for (let i = 0; i < currentMembers.length; i++) {
-			currentMembers[i].audio = connection.receiver.createStream(currentMembers[i].id, { mode: 'pcm', end: 'manual' });
-			currentMembers[i].mixer = mixer.input({
-				volume: 100
-			});
-			currentMembers[i].audio.pipe(currentMembers[i].mixer);
-		}
-		
-		const speaker = new Speaker({
+async function record(channelID) {
+	setTimeout(async function() {
+		connection = await client.channels.cache.get(channelID).join();
+
+		mixer = new AudioMixer.Mixer({
+			channels: 2,
+			bitDepth: 16,
+			sampleRate: 48000,
+		});
+	
+		speaker = new Speaker({
 			channels: 2,
 			bitDepth: 16,
 			sampleRate: 48000,
 			device: device
 		});
-
-		mixer.pipe(speaker);
-
-		silence = setInterval(function() {
-			connection.play(fs.createReadStream('silence.ogg'), { type: 'ogg/opus', volume: 0.1 });
+	
+		if (client.channels.cache.get(channelID).members.size > 1) {
+			client.channels.cache.get(channelID).members.forEach((member) => {
+				if (member.user.id !== client.user.id) {
+					currentMembers.push({ id: member.user.id, audio: '', mixer: '' });
+				}
+			})
+			for (let i = 0; i < currentMembers.length; i++) {
+				currentMembers[i].audio = connection.receiver.createStream(currentMembers[i].id, { mode: 'pcm', end: 'manual' });
+				currentMembers[i].mixer = mixer.input({
+					volume: 100
+				});
+				currentMembers[i].audio.pipe(currentMembers[i].mixer);
+			}
+			mixer.pipe(speaker);
+		}
+	
+		silence = setInterval(function () {
+			connection.play(fs.createReadStream('./silence.wav'));
 		}, 270000)
-		
-		console.log('Audio capture started for channel ' + connection.channel.name + ' on ' + Date())
-		message.channel.send('Connected to `' + message.member.voice.channel.name + '`.')
-	}
-	else
-		message.reply(`you're not in a voice channel!`)
+	
+		console.log('Capture started for channel ' + connection.channel.name + ' on ' + Date());
+		return;
+	}, 500)
 }
-client.login(token);
+function stopRecording(channelName) {
+	if (connection !== undefined) {
+		console.log('Capture stopped for channel ' + channelName + ' on ' + Date())
+		connection.channel.leave();
+	}
+	currentMembers = [];
+	mixer = [];
+	speaker = [];
+	connection = undefined;
+	clearInterval(silence)
+}
+client.login(botToken);

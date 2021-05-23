@@ -1,6 +1,6 @@
 {
   "name": "DACBot",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A bot to capture and stream Discord voice channel audio to a specified device.",
   "homepage": "https://github.com/nicnacnic/DACBot",
   "author": "nicnacnic",
