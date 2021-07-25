@@ -1,5 +1,5 @@
 {
-    "token": "<paste_bot_token_here>",
+    "botToken": "<paste_bot_token_here>",
 	"roleID": "<role_id>",
 	"device": "<device_name>"
 }
