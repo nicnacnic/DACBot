@@ -6,9 +6,10 @@
   "author": "nicnacnic",
   "license": "MIT",
   "dependencies": {
-    "audio-mixer": "^2.1.4",
-    "discord.js": "^12.5.3",
-    "naudiodon": "^2.3.4",
-    "speaker": "github:nacgarg/node-speaker"
+    "@discordjs/opus": "^0.5.3",
+    "@discordjs/voice": "^0.5.5",
+    "discord.js": "^13.0.0-dev.7e30011.1625338909",
+    "ffmpeg-static": "^4.4.0",
+    "libsodium-wrappers": "^0.7.9"
   }
 }
