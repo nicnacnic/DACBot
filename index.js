@@ -3,19 +3,16 @@ const Discord = require('discord.js');
 const { joinVoiceChannel } = require('@discordjs/voice');
 //const Speaker = require('speaker');
 //const AudioMixer = require('audio-mixer')
-const command = require('./commands');
 const { globalCommandData, guildCommandData } = require('./utils')
-const { botToken, roleID, device } = require('./config.json');
+//const { botToken, roleID, device } = require('./config.json');
 
-let silence, connection, guild, mixer, speaker;
-let currentMembers = [];
-connection = undefined;
-
-const client = new Discord.Client({ intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_VOICE_STATES'] });
+const client = new Discord.Client({ intents: ['GUILDS', 'GUILD_MESSAGES'] });
 
 client.once('ready', async () => {
 
 	// Check global commands.
+	await client.guilds.cache.get('869573538288390224').commands.set(guildCommandData);
+
 	const commandList = await client.api.applications(client.user.id).commands.get();
 	if (commandList === undefined || commandList.length === 0)
 		await client.application?.commands.set(globalCommandData)
@@ -24,43 +21,45 @@ client.once('ready', async () => {
 	// Check and route commands.
 	client.on('interactionCreate', async interaction => {
 		if (!interaction.isCommand()) return;
-		console.log('interaction')
-		await interaction.defer();
-		//const botID = await interaction.guild.members.fetch(client.user.id);
-		//if (interaction.channel.permissionsFor(botID).has("MANAGE_MESSAGES")) {
-		switch (interaction.commandName) {
-			case 'ping':
-				pingPong(interaction);
-				break;
-			case 'join':
-				joinChannel(interaction);
-				break;
-			case 'volume':
-				changeVolume(interaction);
-				break;
-			case 'leave':
-				leaveChannel(interaction);
-				break;
+		const botID = await interaction.guild.members.fetch(client.user.id);
+		if (interaction.channel.permissionsFor(botID).has("MANAGE_MESSAGES")) {
+			switch (interaction.commandName) {
+				case 'ping':
+					pingPong(interaction);
+					break;
+				case 'join':
+					joinChannel(interaction);
+					break;
+				case 'volume':
+					changeVolume(interaction);
+					break;
+				case 'leave':
+					leaveChannel(interaction);
+					break;
+			}
 		}
-		//}
-		//else
-		//	interaction.editReply({ content: 'You do not have permission to use this command.', ephemeral: true });
+		else
+			interaction.editReply({ content: 'You do not have permission to use this command.', ephemeral: true });
 	});
 
 	// Check bot ping.
 	function pingPong(interaction) {
-		interaction.editReply('`' + (Date.now() - interaction.createdTimestamp) + '` ms');
+		interaction.reply('`' + (Date.now() - interaction.createdTimestamp) + '` ms');
 	}
 
 	// Join voice channel.
 	async function joinChannel(interaction) {
+		console.log()
+		if (interaction.options.get('channel').type === 'voice') {
 		const connection = joinVoiceChannel({
 			channelId: interaction.channelId,
 			guildId: interaction.guildId,
 			// adapterCreator: channel.guild.voiceAdapterCreator,
 		});
 		await client.guilds.cache.get(interaction.guildID).commands.set(guildCommandData);
-		interaction.editReply('Sucsess')
+		interaction.reply('Sucsess')
+	}
+	interaction.reply(`<!${interaction.options.get('channel').id}> is not a voice channel!`)
 	}
 
 
@@ -196,4 +195,4 @@ client.once('ready', async () => {
 // 	connection = undefined;
 // 	clearInterval(silence)
 // }
-client.login(botToken);
+client.login('ODYxMDAxNTQ1NTk1NzQ4MzUy.YODcLQ.JPMdQr-67ZkknOwl6RoyDdfHyTU');
