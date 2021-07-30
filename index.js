@@ -4,15 +4,14 @@ const { joinVoiceChannel } = require('@discordjs/voice');
 //const Speaker = require('speaker');
 //const AudioMixer = require('audio-mixer')
 const { globalCommandData, guildCommandData } = require('./utils')
-//const { botToken, roleID, device } = require('./config.json');
+const { botToken } = require('./config.json');
 
-const client = new Discord.Client({ intents: ['GUILDS', 'GUILD_MESSAGES'] });
+const client = new Discord.Client({ intents: ['GUILD_VOICE_STATES', 'GUILDS', 'GUILD_MESSAGES'] });
 
 client.once('ready', async () => {
 
 	// Check global commands.
-	await client.guilds.cache.get('869573538288390224').commands.set(guildCommandData);
-
+	client.guilds.cache.get('869573538288390224').commands.set([]);
 	const commandList = await client.api.applications(client.user.id).commands.get();
 	if (commandList === undefined || commandList.length === 0)
 		await client.application?.commands.set(globalCommandData)
@@ -49,17 +48,23 @@ client.once('ready', async () => {
 
 	// Join voice channel.
 	async function joinChannel(interaction) {
-		console.log()
-		if (interaction.options.get('channel').type === 'voice') {
-		const connection = joinVoiceChannel({
-			channelId: interaction.channelId,
-			guildId: interaction.guildId,
-			// adapterCreator: channel.guild.voiceAdapterCreator,
-		});
-		await client.guilds.cache.get(interaction.guildID).commands.set(guildCommandData);
-		interaction.reply('Sucsess')
-	}
-	interaction.reply(`<!${interaction.options.get('channel').id}> is not a voice channel!`)
+		if (interaction.member.voice.channel || interaction.options.get('channel').channel.type === 'GUILD_VOICE') {
+			let channel;
+			if (interaction.options.get('channel'))
+				channel = interaction.options.get('channel').channel
+			else
+				channel = interaction.member.voice.channel;
+			const connection = joinVoiceChannel({
+				channelId: interaction.channelId,
+				guildId: interaction.guildId,
+				adapterCreator: channel.guild.voiceAdapterCreator,
+			});
+			await client.guilds.cache.get(interaction.guildId).commands.set(guildCommandData);
+			console.log('sucsess')
+			interaction.reply('Sucsess')
+		}
+		else
+			interaction.reply(`<#${interaction.options.get('channel').value}> is not a voice channel!`)
 	}
 
 
@@ -195,4 +200,4 @@ client.once('ready', async () => {
 // 	connection = undefined;
 // 	clearInterval(silence)
 // }
-client.login('ODYxMDAxNTQ1NTk1NzQ4MzUy.YODcLQ.JPMdQr-67ZkknOwl6RoyDdfHyTU');
+client.login(botToken);
